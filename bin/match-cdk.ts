@@ -2,6 +2,10 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { MatchCdkStack } from '../lib/match-cdk-stack';
+import {getConfigFromFile} from '../lib/config';
+
+
+const config = getConfigFromFile('.env')
 
 const app = new cdk.App();
 new MatchCdkStack(app, 'MatchCdkStack', {
@@ -11,7 +15,7 @@ new MatchCdkStack(app, 'MatchCdkStack', {
 
   /* Uncomment the next line to specialize this stack for the AWS Account
    * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+  env: { account: config.awsAccount, region: 'eu-central-1' },
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
