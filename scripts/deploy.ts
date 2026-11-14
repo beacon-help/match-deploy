@@ -60,7 +60,7 @@ const steps: [string, () => string][] = [
             throw new StepError(`${SUBMODULE_CONFIG} is missing. Run \`git submodule update --init --recursive\`.`);
         }
         if (!fs.existsSync(ENV_FILE)) {
-            throw new StepError(`${ENV_FILE} is missing. It needs AWS_ACCOUNT_ID, AWS_KEY_PAIR and DOCKER_DIR.`);
+            throw new StepError(`${ENV_FILE} is missing. It needs AWS_ACCOUNT_ID and AWS_KEY_PAIR.`);
         }
         return `Node ${process.versions.node}, match-config present, env file ${ENV_FILE}`;
     }],
@@ -68,6 +68,30 @@ const steps: [string, () => string][] = [
     ['Config', () => {
         config = getConfigFromFile(ENV_FILE);
         return `${config.name} (ENV=${config.env}): account ${config.aws_account}, ${config.aws_region}, ${config.instance_type}`;
+    }],
+
+    ['Release tag', () => {
+        const tag = config.release_tag;
+        if (tag === null) {
+            throw new StepError(
+                'deploy.release_tag is not set. Tag the backend and frontend repos with the same name, ' +
+                'then set it in match-config or in a local config.local.yaml.'
+            );
+        }
+        const commits = [config.backend_repo, config.frontend_repo].map((repo) => {
+            try {
+                const lines = run('git', [
+                    'ls-remote', '--exit-code', '--tags', `https://github.com/${repo}.git`,
+                    `refs/tags/${tag}`, `refs/tags/${tag}^{}`,
+                ]).trim().split('\n');
+                // An annotated tag lists its own object first, then the commit it points at as `^{}`.
+                const commit = (lines.find((line) => line.endsWith('^{}')) ?? lines[0]).slice(0, 7);
+                return `${repo}@${commit}`;
+            } catch (error) {
+                throw new StepError(`Tag ${tag} not found in ${repo}.\n${(error as Error).message}`);
+            }
+        });
+        return `${tag}: ${commits.join(', ')}`;
     }],
 
     ['AWS access', () => {

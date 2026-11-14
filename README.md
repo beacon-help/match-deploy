@@ -21,7 +21,7 @@ make deploy-stack DEPLOY=1   # the same checks, then `cdk deploy`
 ```
 
 The checks run in order and stop at the first failure: prerequisites, config,
-AWS credentials (account must match `AWS_ACCOUNT_ID`), CDK bootstrap, EC2 key
+release tag (must exist in both repos), AWS credentials (account must match `AWS_ACCOUNT_ID`), CDK bootstrap, EC2 key
 pair, synth, current stack state, and the diff against what is deployed. Every
 AWS call in them is read-only. `DEPLOY_ENV_FILE` points at an env file other
 than `.env`.
@@ -43,6 +43,14 @@ Needs Node >= 22.12 (the package is ESM, loaded with `require()`). Local
 overrides go in a gitignored `config.local.yaml`.
 
 The `deploy` section holds the shared values: resource-name prefix (`name`), region,
-branch, backend repo, instance type and ports. `.env` keeps only the private ones:
-`AWS_ACCOUNT_ID`, `AWS_KEY_PAIR`, `DOCKER_DIR`. `AWS_REGION`, `NAME` and
-`GITHUB_BRANCH` are no longer read from it.
+release tag, backend and frontend repos, instance type and ports. `.env` keeps only
+the private ones: `AWS_ACCOUNT_ID` and `AWS_KEY_PAIR`.
+
+`release_tag` is the git tag deployed from both repos, so tag the backend and
+frontend with the same name. To deploy a tag before it is set in match-config,
+put it in `config.local.yaml`:
+
+```yaml
+deploy:
+  release_tag: v1.0.0
+```

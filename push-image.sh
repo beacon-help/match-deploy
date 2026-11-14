@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Shared values come from match-config (deploy section); run from the repo root.
-BRANCH_NAME=$(node -p "require('match-config').getConfig('deploy').github_branch") || exit 1
+RELEASE_TAG=$(node -p "require('match-config').getConfig('deploy').release_tag") || exit 1
+if [[ "$RELEASE_TAG" == "null" ]]; then
+    echo "Error: deploy.release_tag is not set."
+    exit 1
+fi
 BACKEND_REPO=$(node -p "require('match-config').getConfig('deploy').backend_repo") || exit 1
 
 ENV_FILE=
@@ -50,9 +54,9 @@ done
 # A git clone, not the GitHub zip archive: archives leave out submodules, and
 # the backend image copies vendor/match-config into the build.
 mkdir temp/
-git clone --depth 1 --branch ${BRANCH_NAME} --recurse-submodules \
-    https://github.com/${BACKEND_REPO} temp/match-backend-${BRANCH_NAME}
-dockerFileDir="temp/match-backend-${BRANCH_NAME}/Dockerfile"
+git clone --depth 1 --branch ${RELEASE_TAG} --recurse-submodules \
+    https://github.com/${BACKEND_REPO} temp/match-backend-${RELEASE_TAG}
+dockerFileDir="temp/match-backend-${RELEASE_TAG}/Dockerfile"
 
 
 

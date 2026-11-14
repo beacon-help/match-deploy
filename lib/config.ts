@@ -10,8 +10,7 @@ export const ENV_FILE = process.env.DEPLOY_ENV_FILE ?? '.env'
 // Private values: they stay in .env because match-config is public.
 const SecretsSchema = z.object({
     aws_account: z.string(),
-    aws_key_pair: z.string(),
-    docker_image_dir: z.string()
+    aws_key_pair: z.string()
 })
 
 /** Shared values (match-config `deploy` section) plus the private ones from .env. */
@@ -28,8 +27,7 @@ export function getConfigFromFile(fileDir: string): Config {
     const secrets = SecretsSchema.parse(
         {
             aws_account: process.env.AWS_ACCOUNT_ID,
-            aws_key_pair: process.env.AWS_KEY_PAIR,
-            docker_image_dir: process.env.DOCKER_DIR
+            aws_key_pair: process.env.AWS_KEY_PAIR
         }
     )
 
