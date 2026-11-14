@@ -21,3 +21,6 @@ coverage/
 
 # Logs
 *.log
+
+# Local overrides for match-config
+config.local.yaml

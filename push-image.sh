@@ -1,6 +1,8 @@
 #!/bin/bash
 
-BRANCH_NAME="main"
+# Shared values come from match-config (deploy section); run from the repo root.
+BRANCH_NAME=$(node -p "require('match-config').getConfig('deploy').github_branch") || exit 1
+BACKEND_REPO=$(node -p "require('match-config').getConfig('deploy').backend_repo") || exit 1
 
 ENV_FILE=
 OTHER=
@@ -45,9 +47,11 @@ while true; do
     fi
 done
 
+# A git clone, not the GitHub zip archive: archives leave out submodules, and
+# the backend image copies vendor/match-config into the build.
 mkdir temp/
-curl -L https://github.com/julekb/match-backend/archive/${BRANCH_NAME}.zip > temp/repo.zip
-unzip temp/repo.zip -d temp/
+git clone --depth 1 --branch ${BRANCH_NAME} --recurse-submodules \
+    https://github.com/${BACKEND_REPO} temp/match-backend-${BRANCH_NAME}
 dockerFileDir="temp/match-backend-${BRANCH_NAME}/Dockerfile"
 
 
