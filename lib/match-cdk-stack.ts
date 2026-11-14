@@ -1,19 +1,24 @@
 import { Construct } from 'constructs';
 
-import * as t from './config';
+import { Config } from './config';
 
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
 
+export const STACK_NAME = 'MatchCdkStack'
+
+export interface MatchCdkStackProps extends cdk.StackProps {
+  config: Config
+}
 
 export class MatchCdkStack extends cdk.Stack {
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: MatchCdkStackProps) {
     super(scope, id, props);
 
-    const config = t.getConfigFromFile('.env')
+    const { config } = props
     console.log(`Starting for configuration: ${config.name}`)
 
     function _prefixed(s: string) {

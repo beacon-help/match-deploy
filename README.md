@@ -13,6 +13,19 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
 
+## Deploying
+
+```shell
+make deploy-stack            # dry run: checks only, nothing is deployed
+make deploy-stack DEPLOY=1   # the same checks, then `cdk deploy`
+```
+
+The checks run in order and stop at the first failure: prerequisites, config,
+AWS credentials (account must match `AWS_ACCOUNT_ID`), CDK bootstrap, EC2 key
+pair, synth, current stack state, and the diff against what is deployed. Every
+AWS call in them is read-only. `DEPLOY_ENV_FILE` points at an env file other
+than `.env`.
+
 ## Shared config (match-config)
 
 `vendor/match-config` is a git submodule pinned to a tag. After a fresh clone:

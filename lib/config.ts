@@ -4,6 +4,9 @@ import { getConfig, type DeployConfig } from 'match-config';
 import { z } from 'zod';
 
 
+/** The private env file. DEPLOY_ENV_FILE points elsewhere, e.g. for a dry run against a test file. */
+export const ENV_FILE = process.env.DEPLOY_ENV_FILE ?? '.env'
+
 // Private values: they stay in .env because match-config is public.
 const SecretsSchema = z.object({
     aws_account: z.string(),
