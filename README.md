@@ -22,9 +22,17 @@ make deploy-stack DEPLOY=1   # the same checks, then `cdk deploy`
 
 The checks run in order and stop at the first failure: prerequisites, config,
 release tag (must exist in both repos), AWS credentials (account must match `AWS_ACCOUNT_ID`), CDK bootstrap, EC2 key
-pair, synth, current stack state, and the diff against what is deployed. Every
-AWS call in them is read-only. `DEPLOY_ENV_FILE` points at an env file other
-than `.env`.
+pair, backend and frontend tests, synth, current stack state, and the diff
+against what is deployed. Every AWS call in them is read-only.
+`DEPLOY_ENV_FILE` points at an env file other than `.env`.
+
+match-deploy decides the config version of everything it ships. The backend and
+frontend are cloned at the release tag into `temp/release/`, their
+`vendor/match-config` is checked out at this repo's pinned commit, and their
+tests run against it: mypy and pytest for the backend, svelte-check and vitest
+for the frontend. A repo pinned to a newer match-config than this one stops the
+dry run, because that would be a downgrade. The tests need `uv` and `pnpm`, and
+take about 1.5 minutes.
 
 ## Shared config (match-config)
 
