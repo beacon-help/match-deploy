@@ -23,11 +23,7 @@
     "typeRoots": [
       "./node_modules/@types"
     ],
-    "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "match-config": ["node_modules/match-config/dist/index.d.ts"]
-    }
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",

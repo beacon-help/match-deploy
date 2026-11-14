@@ -26,9 +26,8 @@ npm install   # links and builds vendor/match-config/typescript
 import { getConfig } from 'match-config';
 ```
 
-Needs Node >= 22.12 (the package is ESM, loaded with `require()`). `tsconfig.json`
-maps `match-config` to its built types because this project uses classic
-CommonJS module resolution. Local overrides go in a gitignored `config.local.yaml`.
+Needs Node >= 22.12 (the package is ESM, loaded with `require()`). Local
+overrides go in a gitignored `config.local.yaml`.
 
 The `deploy` section holds the shared values: resource-name prefix (`name`), region,
 branch, backend repo, instance type and ports. `.env` keeps only the private ones:

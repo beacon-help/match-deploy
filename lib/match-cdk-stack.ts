@@ -46,18 +46,18 @@ export class MatchCdkStack extends cdk.Stack {
     
     securityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(config.httpPort),
+      ec2.Port.tcp(config.http_port),
       'Allow HTTP access'
     )
 
     securityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(config.httpsPort),
+      ec2.Port.tcp(config.https_port),
       'Allow HTTPS access'
     )
 
     const keyPair = ec2.KeyPair.fromKeyPairAttributes(this, 'KeyPair', {
-      keyPairName: config.awsKeyPair,
+      keyPairName: config.aws_key_pair,
       type: ec2.KeyPairType.RSA,
     })
 
@@ -67,7 +67,7 @@ export class MatchCdkStack extends cdk.Stack {
       role: ec2Role,
       securityGroup: securityGroup,
       instanceName: Ec2InstanceName,
-      instanceType: new ec2.InstanceType(config.instanceType),
+      instanceType: new ec2.InstanceType(config.instance_type),
       machineImage: ec2.MachineImage.latestAmazonLinux2(
         {cpuType: ec2.AmazonLinuxCpuType.ARM_64}
     ),
