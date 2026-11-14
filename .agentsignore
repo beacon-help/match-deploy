@@ -1,0 +1,2 @@
+# Files agents must not read, edit or print. Same syntax as .gitignore.
+.env
